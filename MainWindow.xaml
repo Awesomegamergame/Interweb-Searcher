@@ -5,9 +5,39 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Interweb_Searcher"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Interweb Searcher" Height="550" Width="900" Loaded="Window_Loaded" MinHeight="450" MinWidth="800">
     <Grid>
-        <TextBlock HorizontalAlignment="Left" Margin="104,24,0,0" TextWrapping="NoWrap" Text="TextBlock" VerticalAlignment="Top" Height="18" Width="420"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30px"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
 
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40px"></ColumnDefinition>
+                <ColumnDefinition Width="40px"></ColumnDefinition>
+                <ColumnDefinition Width="40px"></ColumnDefinition>
+                <ColumnDefinition Width="40px"></ColumnDefinition>
+                <ColumnDefinition Width="12*"></ColumnDefinition>
+                <ColumnDefinition Width="40px"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Button Click="Button_Click" Content="←" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="40px" Height="30px" BorderThickness="0" Background="LightGray" Foreground="Black" FontSize="18"></Button>
+            <Button Click="Button_Click" Content="→" Grid.Column="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="40px" Height="30px" BorderThickness="0" Background="LightGray" Foreground="Black" FontSize="18"></Button>
+            <Button Click="Button_Click_1" Content="⟳" Grid.Column="2" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="40px" Height="30px" BorderThickness="0" Background="LightGray" Foreground="Black" FontSize="18"></Button>
+            <Button Click="Button_Click_2" Content="⌂" Grid.Column="3" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="40px" Height="30px" BorderThickness="0" Background="LightGray" Foreground="Black" FontSize="18"></Button>
+
+            <TextBox KeyDown="area_KeyDown" x:Name="area" Grid.Column="4" Background="LightGray" Foreground="Black" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,0"></TextBox>
+
+            <Button x:Name="hBTN" Click="Button_Click_3" MouseRightButtonUp="Button_MouseRightButtonUp" Content="H" Grid.Column="5" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="40px" Height="30px" BorderThickness="0" Background="LightGray" Foreground="Black" FontSize="18">
+                <Button.ContextMenu>
+                    <ContextMenu x:Name="Menu"></ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+
+        </Grid>
+        
+        <Border BorderThickness="1" BorderBrush="Gray"></Border>
+        <WebBrowser x:Name="InternetB" Source="http://www.google.com" Grid.Row="1"/>
     </Grid>
 </Window>
