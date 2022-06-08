@@ -27,7 +27,7 @@
             <Button Click="Button_Click_1" Content="⟳" Grid.Column="2" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="40px" Height="30px" BorderThickness="0" Background="LightGray" Foreground="Black" FontSize="18"></Button>
             <Button Click="Button_Click_2" Content="⌂" Grid.Column="3" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="40px" Height="30px" BorderThickness="0" Background="LightGray" Foreground="Black" FontSize="18"></Button>
 
-            <TextBox KeyDown="area_KeyDown" x:Name="area" Grid.Column="4" Background="LightGray" Foreground="Black" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,0"></TextBox>
+            <TextBox KeyDown="Area_KeyDown" x:Name="area" Grid.Column="4" Background="LightGray" Foreground="Black" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,0"></TextBox>
 
             <Button x:Name="hBTN" Click="Button_Click_3" MouseRightButtonUp="Button_MouseRightButtonUp" Content="H" Grid.Column="5" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="40px" Height="30px" BorderThickness="0" Background="LightGray" Foreground="Black" FontSize="18">
                 <Button.ContextMenu>

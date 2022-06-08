@@ -104,7 +104,7 @@ namespace Interweb_Searcher
             MenuItem item = (MenuItem)sender;
             LoadWebPages(item.Header.ToString());
         }
-        private void area_KeyDown(object sender, KeyEventArgs e)
+        private void Area_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
