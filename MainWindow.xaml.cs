@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Interweb_Searcher
 {
@@ -10,11 +11,15 @@ namespace Interweb_Searcher
     {
         public static MainWindow ISWindow;
         public static List<string> WebPages;
+        public System.Windows.Forms.WebBrowser wb1;
+        public string ProgramLocation = $"{AppDomain.CurrentDomain.BaseDirectory}\\zoom.txt";
         int Current = 0;
+        public int Zoom = 0;
         public MainWindow()
         {
             InitializeComponent();
             ISWindow = this;
+            wb1 = wfh.Child as System.Windows.Forms.WebBrowser;
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -42,7 +47,7 @@ namespace Interweb_Searcher
             area.Text = Link;
             try
             {
-                InternetB.Source = new Uri(Link);
+                wb1.Url = new Uri(Link);
                 AddMenuItem(Link);
 
                 if (addToList)
@@ -95,7 +100,7 @@ namespace Interweb_Searcher
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             area.Text = "http://www.google.com";
-            InternetB.Source = new Uri("http://www.google.com");
+            wb1.Url = new Uri("http://www.google.com");
             WebPages.Add("http://www.google.com");
             Current++;
         }
@@ -124,6 +129,42 @@ namespace Interweb_Searcher
         private void Button_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
+        }
+
+        private void ZoomIn_Click(object sender, RoutedEventArgs e)
+        {
+            Zoom += 25;
+            if(Zoom > 1000)
+            {
+                Zoom = 1000;
+            }
+            SetZoomPercent(Zoom);
+        }
+        private void ZoomOut_Click(object sender, RoutedEventArgs e)
+        {
+            Zoom -= 25;
+            if (Zoom < 25)
+            {
+                Zoom = 25;
+            }
+            SetZoomPercent(Zoom);
+        }
+        public void SetZoomPercent(int zoom)
+        {
+            int OLECMDID_OPTICAL_ZOOM = 63;
+            int OLECMDEXECOPT_DONTPROMPTUSER = 2;
+            dynamic iwb2 = wb1.ActiveXInstance;
+            iwb2.ExecWB(OLECMDID_OPTICAL_ZOOM, OLECMDEXECOPT_DONTPROMPTUSER, zoom, zoom);
+        }
+
+        private void InternetB_DocumentCompleted(object sender, System.Windows.Forms.WebBrowserDocumentCompletedEventArgs e)
+        {
+            try
+            {
+                if (!File.Exists(ProgramLocation)) { File.WriteAllText(ProgramLocation, "100"); SetZoomPercent(100); Zoom = 100; }
+                else { Zoom = int.Parse(File.ReadAllText(ProgramLocation)); SetZoomPercent(Zoom); }
+            }
+            catch(Exception ex) { MessageBox.Show(ex.ToString()); };
         }
     }
 }

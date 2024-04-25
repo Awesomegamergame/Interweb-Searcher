@@ -11,7 +11,7 @@ namespace Interweb_Searcher
     {
         public static void StartupFun(string link)
         {
-            ISWindow.InternetB.Source = new Uri(link);
+            ISWindow.wb1.Url = new Uri(link);
             ISWindow.area.Text = link;
             WebPages.Add(link);
             AddMenuItem(link);
