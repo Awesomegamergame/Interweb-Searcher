@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Interweb_Searcher.MainWindow;
+using static Interweb_Searcher.MainWindowOld;
 
 namespace Interweb_Searcher
 {

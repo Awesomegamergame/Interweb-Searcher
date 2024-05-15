@@ -7,15 +7,15 @@ using System.IO;
 
 namespace Interweb_Searcher
 {
-    public partial class MainWindow : Window
+    public partial class MainWindowOld : Window
     {
-        public static MainWindow ISWindow;
+        public static MainWindowOld ISWindow;
         public static List<string> WebPages;
         public System.Windows.Forms.WebBrowser wb1;
         public string ProgramLocation = $"{AppDomain.CurrentDomain.BaseDirectory}\\zoom.txt";
         int Current = 0;
         public int Zoom = 0;
-        public MainWindow()
+        public MainWindowOld()
         {
             InitializeComponent();
             ISWindow = this;
