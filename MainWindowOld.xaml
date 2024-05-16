@@ -13,7 +13,7 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" Background="LightGray">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="40px"></ColumnDefinition>
                 <ColumnDefinition Width="40px"></ColumnDefinition>
@@ -23,6 +23,8 @@
                 <ColumnDefinition Width="40px"></ColumnDefinition>
                 <ColumnDefinition Width="40px"></ColumnDefinition>
                 <ColumnDefinition Width="40px"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <!-- Changed to auto to fit the CheckBox and TextBlock -->
             </Grid.ColumnDefinitions>
 
             <Button Click="Button_Click" Content="←" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Width="40px" Height="30px" BorderThickness="0" Background="LightGray" Foreground="Black" FontSize="18"></Button>
@@ -39,6 +41,15 @@
                     <ContextMenu x:Name="Menu"></ContextMenu>
                 </Button.ContextMenu>
             </Button>
+
+            <StackPanel Grid.Column="8" Orientation="Horizontal" VerticalAlignment="Center">
+                <CheckBox VerticalAlignment="Center" HorizontalAlignment="Center" IsChecked="False" Checked="CheckBox_Checked">
+                    <CheckBox.LayoutTransform>
+                        <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+                    </CheckBox.LayoutTransform>
+                </CheckBox>
+                <TextBlock Text="New UI" VerticalAlignment="Center" FontSize="14" Margin="5,0,10,0" />
+            </StackPanel>
 
         </Grid>
 

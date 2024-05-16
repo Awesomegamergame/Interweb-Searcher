@@ -24,18 +24,19 @@
 
             <!-- Navigation Buttons -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="10">
-                <Button Content="🡠" Command="{Binding BackCommand}" Margin="5"/>
-                <Button Content="🡢" Command="{Binding ForwardCommand}" Margin="5"/>
-                <Button Content="⭮" Command="{Binding RefreshCommand}" Margin="5"/>
-                <Button Content="🏠"  Command="{Binding NavigateHomeCommand}" Margin="5"/>
+                <wpfui:Button x:Name="BackButton" Icon="{wpfui:SymbolIcon ArrowLeft48}" FontSize="18" Command="{Binding BackCommand}" Margin="5" />
+                <wpfui:Button Icon="{wpfui:SymbolIcon ArrowRight48}" FontSize="18" Command="{Binding ForwardCommand}" Margin="5" />
+                <wpfui:Button Icon="{wpfui:SymbolIcon ArrowClockwise48}" FontSize="18" Command="{Binding RefreshCommand}" Margin="5" />
+                <wpfui:Button Icon="{wpfui:SymbolIcon Home48}" FontSize="18" Command="{Binding NavigateHomeCommand}" Margin="5" />
             </StackPanel>
 
             <!-- Address Bar -->
-            <TextBox Grid.Column="1" x:Name="UrlBox" Text="{Binding CurrentUrl, UpdateSourceTrigger=PropertyChanged}" Margin="10"
-            KeyDown="UrlBox_KeyDown"/>
+            <TextBox Grid.Column="1" x:Name="UrlBox" Text="{Binding CurrentUrl, UpdateSourceTrigger=PropertyChanged}" 
+                     Margin="10" VerticalAlignment="Center" MinHeight="{Binding ActualHeight, ElementName=BackButton}"
+                     KeyDown="UrlBox_KeyDown"/>
 
-            <!-- Go Button -->
-            <Button Grid.Column="2" Content="Go" Command="{Binding NavigateCommand}" CommandParameter="{Binding Text, ElementName=UrlBox}" Margin="10" MinWidth="60"/>
+            <!-- New UI Switch -->
+            <wpfui:ToggleSwitch Grid.Column="3" Margin="10" Content="New UI" IsChecked="True" Unchecked="ToggleSwitch_Unchecked"/>
         </Grid>
 
         <!-- WebBrowser Control -->
