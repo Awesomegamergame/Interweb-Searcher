@@ -1,5 +1,6 @@
 name: Bleeding Edge Build
 on:
+  workflow_dispatch:
   push:
     branches: [ dev ]
   pull_request:
@@ -19,9 +20,15 @@ jobs:
       id: get_hash
       shell: bash
       run: echo "hash=`git rev-parse --short HEAD`" >> $GITHUB_OUTPUT
-    - name: Upload Debug Build
+    - name: Upload Debug Build x86
       if: startsWith(github.ref, 'refs/tags/') == false
       uses: actions/upload-artifact@v4.3.3
       with:
-        name: Interweb.Searcher-${{ steps.get_hash.outputs.hash }}
-        path: ./bin/Debug/
+        name: Interweb.Searcher.x86-${{ steps.get_hash.outputs.hash }}
+        path: ./bin/x86/Debug/
+    - name: Upload Debug Build x64
+      if: startsWith(github.ref, 'refs/tags/') == false
+      uses: actions/upload-artifact@v4.3.3
+      with:
+        name: Interweb.Searcher.x64-${{ steps.get_hash.outputs.hash }}
+        path: ./bin/x64/Debug/

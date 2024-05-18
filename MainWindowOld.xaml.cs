@@ -4,18 +4,19 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Interweb_Searcher
 {
-    public partial class MainWindow : Window
+    public partial class MainWindowOld : Window
     {
-        public static MainWindow ISWindow;
+        public static MainWindowOld ISWindow;
         public static List<string> WebPages;
         public System.Windows.Forms.WebBrowser wb1;
         public string ProgramLocation = $"{AppDomain.CurrentDomain.BaseDirectory}\\zoom.txt";
         int Current = 0;
         public int Zoom = 0;
-        public MainWindow()
+        public MainWindowOld()
         {
             InitializeComponent();
             ISWindow = this;
@@ -165,6 +166,24 @@ namespace Interweb_Searcher
                 else { Zoom = int.Parse(File.ReadAllText(ProgramLocation)); SetZoomPercent(Zoom); }
             }
             catch(Exception ex) { MessageBox.Show(ex.ToString()); };
+        }
+
+        private async void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            string newFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "new");
+
+            // Delete the "new" file if it exists
+            if (!File.Exists(newFilePath))
+            {
+                File.Create(newFilePath);
+            }
+
+            // Wait for 500 milliseconds to allow the checkbox to visually update
+            await Task.Delay(500);
+
+            // Restart the application
+            System.Windows.Forms.Application.Restart();
+            Application.Current.Shutdown();
         }
     }
 }
