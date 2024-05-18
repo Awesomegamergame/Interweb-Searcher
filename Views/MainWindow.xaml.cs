@@ -12,6 +12,8 @@ namespace Interweb_Searcher.Views
     {
         private MainWindowViewModel _viewModel;
 
+        public string StartupUrl { get; set; } = "https://www.google.com";  // Default home page
+
         public MainWindow()
         {
             InitializeComponent();
@@ -21,17 +23,23 @@ namespace Interweb_Searcher.Views
 
             TabControl.SelectionChanged += TabControl_SelectionChanged;
 
-            _viewModel.NavigateCommand.Execute(_viewModel.CurrentUrl);
+            Loaded += MainWindow_Loaded;  // Add event handler for Loaded event
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Navigate to the StartupUrl when the window is loaded
+            _viewModel.NavigateCommand.Execute(StartupUrl);
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DataContext is MainWindowViewModel viewModel)
+            if (e.Source is TabControl)
             {
-                if (TabControl.SelectedIndex >= 0 && TabControl.SelectedIndex < viewModel.Tabs.Count)
+                // Update the ViewModel's CurrentUrl property with the new URL
+                if (TabControl.SelectedItem is WebBrowser selectedBrowser)
                 {
-                    viewModel.SelectedBrowser = viewModel.Tabs[TabControl.SelectedIndex];
-                    viewModel.CurrentUrl = viewModel.SelectedBrowser.Source?.ToString() ?? "https://www.google.com";
+                    _viewModel.CurrentUrl = selectedBrowser.Source?.ToString();
                 }
             }
         }
@@ -40,6 +48,7 @@ namespace Interweb_Searcher.Views
         {
             if (e.Key == Key.Enter)
             {
+                // Execute the NavigateCommand when Enter key is pressed
                 if (DataContext is MainWindowViewModel viewModel)
                 {
                     viewModel.NavigateCommand.Execute(UrlBox.Text);
@@ -51,13 +60,16 @@ namespace Interweb_Searcher.Views
         {
             string newFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "new");
 
+            // Delete the "new" file if it exists
             if (File.Exists(newFilePath))
             {
                 File.Delete(newFilePath);
             }
 
+            // Wait for 500 milliseconds to allow the checkbox to visually update
             await Task.Delay(500);
 
+            // Restart the application
             System.Windows.Forms.Application.Restart();
             Application.Current.Shutdown();
         }

@@ -45,7 +45,7 @@
         </Grid>
 
         <!-- TabControl for WebBrowser -->
-        <TabControl Grid.Row="1" x:Name="TabControl" Margin="5" 
+        <TabControl Grid.Row="1" x:Name="TabControl" Margin="0" 
                     ItemsSource="{Binding Tabs}" 
                     SelectedIndex="{Binding SelectedTabIndex}" 
                     SelectionChanged="TabControl_SelectionChanged">

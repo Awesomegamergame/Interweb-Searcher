@@ -27,7 +27,7 @@ namespace Interweb_Searcher.ViewModels
             RefreshCommand = new RelayCommand(Refresh);
             NavigateHomeCommand = new RelayCommand(NavigateHome);
 
-            CurrentUrl = "https://www.google.com";
+            CurrentUrl = "https://www.google.com";  // Default home page
             SelectedBrowser.Navigate(CurrentUrl);  // Navigate the initial tab to the home page
 
             // Subscribe to the Navigated event to update the address bar

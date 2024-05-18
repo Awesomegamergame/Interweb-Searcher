@@ -17,25 +17,37 @@ namespace Interweb_Searcher
             string[] args = Environment.GetCommandLineArgs();
 
             Window mainWindow;
+            string startupUrl = "https://www.google.com";  // Default home page
 
-            if (File.Exists("new")) { mainWindow = new MainWindow(); }
-            else { Resources.MergedDictionaries.Clear(); mainWindow = new MainWindowOld(); }
-
-            if (args.Length == 2)
+            if (File.Exists("new"))
             {
-
-                mainWindow.Show();
-                //StartupF.StartupFun(args[1]);
+                mainWindow = new MainWindow();
             }
             else
             {
-                mainWindow.Show();
+                Resources.MergedDictionaries.Clear();
+                mainWindow = new MainWindowOld();
             }
-        }
 
-        private void Application_Exit(object sender, ExitEventArgs e)
-        {
-            //File.WriteAllText(window.ProgramLocation, window.Zoom.ToString());
+            if (args.Length == 2)
+            {
+                startupUrl = args[1];  // Use the URL provided in the command line argument
+            }
+
+            if (mainWindow is MainWindow mainWindowCast)
+            {
+                mainWindowCast.StartupUrl = startupUrl;  // Pass the URL to MainWindow
+            }
+            
+            mainWindow.Show();
+
+            if(mainWindow is MainWindowOld mainWindowOld)
+            {
+                MainWindowOld.ISWindow.wb1.Url = new Uri(startupUrl);
+                MainWindowOld.ISWindow.area.Text = startupUrl;
+                MainWindowOld.WebPages.Add(startupUrl);
+                MainWindowOld.AddMenuItem(startupUrl);
+            }
         }
     }
 }

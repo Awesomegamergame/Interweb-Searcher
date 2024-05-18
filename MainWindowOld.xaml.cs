@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Interweb_Searcher.Views;
 
 namespace Interweb_Searcher
 {
@@ -184,6 +185,11 @@ namespace Interweb_Searcher
             // Restart the application
             System.Windows.Forms.Application.Restart();
             Application.Current.Shutdown();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            File.WriteAllText(ISWindow.ProgramLocation, ISWindow.Zoom.ToString());
         }
     }
 }
