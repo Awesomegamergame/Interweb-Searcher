@@ -7,7 +7,7 @@
         xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
         mc:Ignorable="d"
         Title="Interweb Searcher" MinWidth="600" MinHeight="400" Height="550" Width="900">
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -19,6 +19,9 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
@@ -37,9 +40,25 @@
 
             <!-- New UI Switch -->
             <wpfui:ToggleSwitch Grid.Column="3" Margin="10" Content="New UI" IsChecked="True" Unchecked="ToggleSwitch_Unchecked"/>
+            <wpfui:Button Grid.Column="4" Icon="{wpfui:SymbolIcon Add48}" FontSize="18" Command="{Binding AddTabCommand}" Margin="5" />
+            <wpfui:Button Grid.Column="5" Icon="{wpfui:SymbolIcon Subtract48}" FontSize="18" Command="{Binding RemoveTabCommand}" Margin="5" />
         </Grid>
 
-        <!-- WebBrowser Control -->
-        <WebBrowser x:Name="webBrowser" Grid.Row="1"/>
+        <!-- TabControl for WebBrowser -->
+        <TabControl Grid.Row="1" x:Name="TabControl" Margin="5" 
+                    ItemsSource="{Binding Tabs}" 
+                    SelectedIndex="{Binding SelectedTabIndex}" 
+                    SelectionChanged="TabControl_SelectionChanged">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="Tab"/>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <ContentControl Content="{Binding }"/>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
     </Grid>
 </Window>
