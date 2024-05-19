@@ -15,9 +15,9 @@ namespace Interweb_Searcher.ViewModels
 
         public MainWindowViewModel()
         {
-            Tabs = new ObservableCollection<WebBrowser> { new WebBrowser() };
+            Tabs = new ObservableCollection<TabViewModel> { new TabViewModel() };
             SelectedTabIndex = 0;
-            SelectedBrowser = Tabs[0];
+            SelectedBrowser = Tabs[0].Browser;
 
             AddTabCommand = new RelayCommand(AddTab);
             RemoveTabCommand = new RelayCommand(RemoveTab, CanRemoveTab);
@@ -32,9 +32,10 @@ namespace Interweb_Searcher.ViewModels
 
             // Subscribe to the Navigated event to update the address bar
             SelectedBrowser.Navigated += SelectedBrowser_Navigated;
+            SelectedBrowser.LoadCompleted += SelectedBrowser_LoadCompleted;
         }
 
-        public ObservableCollection<WebBrowser> Tabs { get; }
+        public ObservableCollection<TabViewModel> Tabs { get; }
 
         public int SelectedTabIndex
         {
@@ -45,7 +46,7 @@ namespace Interweb_Searcher.ViewModels
                 OnPropertyChanged();
                 if (value >= 0 && value < Tabs.Count)
                 {
-                    SelectedBrowser = Tabs[value];
+                    SelectedBrowser = Tabs[value].Browser;
                     CurrentUrl = SelectedBrowser.Source?.ToString() ?? CurrentUrl;
                 }
             }
@@ -81,13 +82,9 @@ namespace Interweb_Searcher.ViewModels
 
         private void AddTab(object parameter)
         {
-            var newBrowser = new WebBrowser();
-            newBrowser.Navigate("https://www.google.com");  // Navigate the new tab to the home page
-            Tabs.Add(newBrowser);
+            var newTab = new TabViewModel();
+            Tabs.Add(newTab);
             SelectedTabIndex = Tabs.Count - 1;  // Switch to the new tab
-
-            // Subscribe to the Navigated event to update the address bar
-            newBrowser.Navigated += SelectedBrowser_Navigated;
         }
 
         private void RemoveTab(object parameter)
@@ -147,6 +144,31 @@ namespace Interweb_Searcher.ViewModels
         private void SelectedBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
             CurrentUrl = e.Uri?.ToString() ?? CurrentUrl;
+        }
+        private void SelectedBrowser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+            string title = (string)SelectedBrowser.InvokeScript("eval", "document.title.toString()");
+            if (string.IsNullOrEmpty(title))
+            {
+                Tabs[SelectedTabIndex].TabText = TruncateText(CurrentUrl, 27);
+            }
+            else
+            {
+                Tabs[SelectedTabIndex].TabText = TruncateText(title, 27);
+            }
+        }
+
+
+        private string TruncateText(string text, int maxLength)
+        {
+            if (text.Length <= maxLength)
+            {
+                return text;
+            }
+            else
+            {
+                return text.Substring(0, maxLength);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

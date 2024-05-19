@@ -51,12 +51,12 @@
                     SelectionChanged="TabControl_SelectionChanged">
             <TabControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="Tab"/>
+                    <TextBlock Text="{Binding TabText}" />
                 </DataTemplate>
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <ContentControl Content="{Binding }"/>
+                    <ContentControl Content="{Binding Browser}"/>
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>
