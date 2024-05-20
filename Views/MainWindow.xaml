@@ -52,11 +52,11 @@
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="125"/>
+                            <ColumnDefinition Width="170"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="{Binding TabText}" VerticalAlignment="Center"/>
-                        <Button Grid.Column="1" Content="X" Command="{Binding RemoveTabCommand}"/>
+                        <wpfui:Button Grid.Column="1" Icon="{wpfui:SymbolIcon Dismiss48}" Command="{Binding RemoveTabCommand}"/>
                     </Grid>
                 </DataTemplate>
             </TabControl.ItemTemplate>

@@ -93,6 +93,7 @@ namespace Interweb_Searcher.ViewModels
             {
                 int index = Tabs.IndexOf(tab);
                 Tabs.Remove(tab);
+                tab.Dispose(); // Dispose of the tab to release resources
 
                 // Adjust the selected tab index after removing a tab
                 if (Tabs.Count == 0)
@@ -114,6 +115,7 @@ namespace Interweb_Searcher.ViewModels
                 }
             }
         }
+
 
         private bool CanRemoveTab(object parameter)
         {
