@@ -41,17 +41,23 @@
             <!-- New UI Switch -->
             <wpfui:ToggleSwitch Grid.Column="3" Margin="10" Content="New UI" IsChecked="True" Unchecked="ToggleSwitch_Unchecked"/>
             <wpfui:Button Grid.Column="4" Icon="{wpfui:SymbolIcon Add48}" FontSize="18" Command="{Binding AddTabCommand}" Margin="5" />
-            <wpfui:Button Grid.Column="5" Icon="{wpfui:SymbolIcon Subtract48}" FontSize="18" Command="{Binding RemoveTabCommand}" Margin="5" />
         </Grid>
 
         <!-- TabControl for WebBrowser -->
-        <TabControl Grid.Row="1" x:Name="TabControl" Margin="0" 
-                    ItemsSource="{Binding Tabs}" 
-                    SelectedIndex="{Binding SelectedTabIndex}" 
-                    SelectionChanged="TabControl_SelectionChanged">
+        <TabControl Grid.Row="1" x:Name="TabControl" Margin="0"
+            ItemsSource="{Binding Tabs}"
+            SelectedIndex="{Binding SelectedTabIndex}"
+            SelectionChanged="TabControl_SelectionChanged">
             <TabControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding TabText}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="125"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding TabText}" VerticalAlignment="Center"/>
+                        <Button Grid.Column="1" Content="X" Command="{Binding RemoveTabCommand}"/>
+                    </Grid>
                 </DataTemplate>
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>

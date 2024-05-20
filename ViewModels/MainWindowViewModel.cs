@@ -15,7 +15,7 @@ namespace Interweb_Searcher.ViewModels
 
         public MainWindowViewModel()
         {
-            Tabs = new ObservableCollection<TabViewModel> { new TabViewModel() };
+            Tabs = new ObservableCollection<TabViewModel> { new TabViewModel(this) };
             SelectedTabIndex = 0;
             SelectedBrowser = Tabs[0].Browser;
 
@@ -82,17 +82,36 @@ namespace Interweb_Searcher.ViewModels
 
         private void AddTab(object parameter)
         {
-            var newTab = new TabViewModel();
+            var newTab = new TabViewModel(this);
             Tabs.Add(newTab);
             SelectedTabIndex = Tabs.Count - 1;  // Switch to the new tab
         }
 
-        private void RemoveTab(object parameter)
+        public void RemoveTab(object parameter)
         {
-            if (SelectedTabIndex >= 0 && Tabs.Count > 1)
+            if (parameter is TabViewModel tab && Tabs.Contains(tab))
             {
-                Tabs.RemoveAt(SelectedTabIndex);
-                SelectedTabIndex = Tabs.Count - 1;
+                int index = Tabs.IndexOf(tab);
+                Tabs.Remove(tab);
+
+                // Adjust the selected tab index after removing a tab
+                if (Tabs.Count == 0)
+                {
+                    // Add a new tab if no tabs are left
+                    var newTab = new TabViewModel(this);
+                    Tabs.Add(newTab);
+                    SelectedTabIndex = 0;
+                }
+                else if (index == Tabs.Count)
+                {
+                    // If the removed tab was the last one, switch to the previous tab
+                    SelectedTabIndex = Tabs.Count - 1;
+                }
+                else if (index < Tabs.Count)
+                {
+                    // If the removed tab was not the last one, stay at the same index
+                    SelectedTabIndex = index;
+                }
             }
         }
 
@@ -145,6 +164,7 @@ namespace Interweb_Searcher.ViewModels
         {
             CurrentUrl = e.Uri?.ToString() ?? CurrentUrl;
         }
+
         private void SelectedBrowser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
             string title = (string)SelectedBrowser.InvokeScript("eval", "document.title.toString()");
@@ -157,7 +177,6 @@ namespace Interweb_Searcher.ViewModels
                 Tabs[SelectedTabIndex].TabText = TruncateText(title, 27);
             }
         }
-
 
         private string TruncateText(string text, int maxLength)
         {

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Interweb_Searcher.ViewModels
@@ -12,7 +8,18 @@ namespace Interweb_Searcher.ViewModels
     public class TabViewModel : INotifyPropertyChanged
     {
         private string _tabText = "New Tab";
-        private WebBrowser _browser = new WebBrowser();
+        private WebBrowser _browser;
+        private MainWindowViewModel _mainWindowViewModel;
+
+        public TabViewModel(MainWindowViewModel mainWindowViewModel)
+        {
+            _mainWindowViewModel = mainWindowViewModel;
+            _browser = new WebBrowser();
+            _browser.Navigated += Browser_Navigated;
+            _browser.LoadCompleted += Browser_LoadCompleted;
+            Browser.Navigate("https://www.google.com"); // Default home page
+            RemoveTabCommand = new RelayCommand(RemoveTab);
+        }
 
         public string TabText
         {
@@ -34,9 +41,36 @@ namespace Interweb_Searcher.ViewModels
             }
         }
 
-        public TabViewModel()
+        public RelayCommand RemoveTabCommand { get; }
+
+        private void RemoveTab(object parameter)
         {
-            // Set up any additional initialization logic for the tab
+            _mainWindowViewModel.RemoveTab(this);
+        }
+
+        private void Browser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+            // This ensures that the current URL is updated correctly
+            _mainWindowViewModel.CurrentUrl = e.Uri?.ToString() ?? _mainWindowViewModel.CurrentUrl;
+        }
+
+        private void Browser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+            // This fetches the title of the webpage and updates the tab text
+            string title = (string)Browser.InvokeScript("eval", "document.title.toString()");
+            TabText = string.IsNullOrEmpty(title) ? TruncateText(_mainWindowViewModel.CurrentUrl, 27) : TruncateText(title, 27);
+        }
+
+        private string TruncateText(string text, int maxLength)
+        {
+            if (text.Length <= maxLength)
+            {
+                return text;
+            }
+            else
+            {
+                return text.Substring(0, maxLength);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
