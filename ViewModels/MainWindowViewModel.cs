@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -12,12 +13,12 @@ namespace Interweb_Searcher.ViewModels
         private string _currentUrl;
         private WebBrowser _selectedBrowser;
         private int _selectedTabIndex;
+        private bool _suppressSelectionChanged;
 
         public MainWindowViewModel()
         {
-            Tabs = new ObservableCollection<TabViewModel> { new TabViewModel(this) };
-            SelectedTabIndex = 0;
-            SelectedBrowser = Tabs[0].Browser;
+            Tabs = new ObservableCollection<TabViewModel>();
+            AddInitialTabs();
 
             AddTabCommand = new RelayCommand(AddTab);
             RemoveTabCommand = new RelayCommand(RemoveTab, CanRemoveTab);
@@ -42,12 +43,27 @@ namespace Interweb_Searcher.ViewModels
             get => _selectedTabIndex;
             set
             {
-                _selectedTabIndex = value;
-                OnPropertyChanged();
-                if (value >= 0 && value < Tabs.Count)
+                if (_selectedTabIndex != value)
                 {
-                    SelectedBrowser = Tabs[value].Browser;
-                    CurrentUrl = SelectedBrowser.Source?.ToString() ?? CurrentUrl;
+                    _selectedTabIndex = value;
+                    OnPropertyChanged();
+                    if (_suppressSelectionChanged) return;
+
+                    if (value >= 0 && value < Tabs.Count)
+                    {
+                        var selectedTab = Tabs[value];
+                        if (selectedTab.IsSpecialTab)
+                        {
+                            _suppressSelectionChanged = true;
+                            AddTabBeforeSpecialTab();
+                            _suppressSelectionChanged = false;
+                        }
+                        else
+                        {
+                            SelectedBrowser = selectedTab.Browser;
+                            CurrentUrl = SelectedBrowser.Source?.ToString() ?? CurrentUrl;
+                        }
+                    }
                 }
             }
         }
@@ -80,11 +96,33 @@ namespace Interweb_Searcher.ViewModels
         public ICommand RefreshCommand { get; }
         public ICommand NavigateHomeCommand { get; }
 
+        private void AddInitialTabs()
+        {
+            var firstTab = new TabViewModel(this);
+            Tabs.Add(firstTab);
+            AddSpecialTab();
+            SelectedTabIndex = 0;
+            SelectedBrowser = Tabs[SelectedTabIndex].Browser;
+        }
+
         private void AddTab(object parameter)
         {
             var newTab = new TabViewModel(this);
-            Tabs.Add(newTab);
-            SelectedTabIndex = Tabs.Count - 1;  // Switch to the new tab
+            Tabs.Insert(Tabs.Count - 1, newTab);  // Add new tab before the special "New Tab"
+            SelectedTabIndex = Tabs.Count - 2;  // Switch to the new tab
+        }
+
+        private void AddSpecialTab()
+        {
+            var specialTab = new TabViewModel(this) { TabText = "+", IsSpecialTab = true };
+            Tabs.Add(specialTab);
+        }
+
+        private void AddTabBeforeSpecialTab()
+        {
+            var newTab = new TabViewModel(this);
+            Tabs.Insert(Tabs.Count - 1, newTab);  // Insert before the last special tab
+            SelectedTabIndex = Tabs.Count - 2;  // Switch to the new tab
         }
 
         public void RemoveTab(object parameter)
@@ -92,34 +130,42 @@ namespace Interweb_Searcher.ViewModels
             if (parameter is TabViewModel tab && Tabs.Contains(tab))
             {
                 int index = Tabs.IndexOf(tab);
-                Tabs.Remove(tab);
-                tab.Dispose(); // Dispose of the tab to release resources
-
                 // Adjust the selected tab index after removing a tab
-                if (Tabs.Count == 0)
+                if (Tabs.Count == 1)
                 {
-                    // Add a new tab if no tabs are left
-                    var newTab = new TabViewModel(this);
-                    Tabs.Add(newTab);
-                    SelectedTabIndex = 0;
+                    // Add a new tab if no tabs are left except the special one
+                    AddTab(null);
                 }
-                else if (index == Tabs.Count)
+                else if (index >= Tabs.Count - 2)
                 {
-                    // If the removed tab was the last one, switch to the previous tab
-                    SelectedTabIndex = Tabs.Count - 1;
+                    // If the removed tab was the last one (not including the special tab),
+                    // and there is a tab before the special tab, switch to the previous tab
+                    if (index > 0 && !Tabs[index - 1].IsSpecialTab)
+                    {
+                        SelectedTabIndex = index - 1;
+                    }
+                    else
+                    {
+                        // Otherwise, move to the special tab
+                        SelectedTabIndex = Tabs.Count - 2;
+                    }
                 }
-                else if (index < Tabs.Count)
+                else
                 {
                     // If the removed tab was not the last one, stay at the same index
                     SelectedTabIndex = index;
                 }
+                
+                Tabs.Remove(tab);
+                tab.Dispose();  // Dispose of the tab to release resources
+
+                
             }
         }
 
-
         private bool CanRemoveTab(object parameter)
         {
-            return Tabs.Count > 1;
+            return Tabs.Count > 2;  // Allow removal only if there are more than one real tab and the special tab
         }
 
         private void Navigate(object parameter)

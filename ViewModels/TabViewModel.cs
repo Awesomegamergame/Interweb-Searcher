@@ -10,6 +10,7 @@ namespace Interweb_Searcher.ViewModels
     {
         private string _tabText = "New Tab";
         private WebBrowser _browser;
+        private readonly MainWindowViewModel _mainWindowViewModel;
 
         public TabViewModel(MainWindowViewModel mainWindowViewModel)
         {
@@ -41,7 +42,7 @@ namespace Interweb_Searcher.ViewModels
             }
         }
 
-        private readonly MainWindowViewModel _mainWindowViewModel;
+        public bool IsSpecialTab { get; set; }
 
         public ICommand RemoveTabCommand { get; }
 

@@ -48,23 +48,54 @@
             ItemsSource="{Binding Tabs}"
             SelectedIndex="{Binding SelectedTabIndex}"
             SelectionChanged="TabControl_SelectionChanged">
-            <TabControl.ItemTemplate>
-                <DataTemplate>
+
+            <TabControl.Resources>
+                <!-- DataTemplate for Normal Tabs -->
+                <DataTemplate x:Key="NormalTabTemplate">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="170"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="{Binding TabText}" VerticalAlignment="Center"/>
-                        <wpfui:Button Grid.Column="1" Icon="{wpfui:SymbolIcon Dismiss48}" Command="{Binding RemoveTabCommand}"/>
+                        <wpfui:Button Grid.Column="1" Icon="{wpfui:SymbolIcon Dismiss48}" Width="35" Command="{Binding DataContext.RemoveTabCommand, RelativeSource={RelativeSource AncestorType=TabControl}}" CommandParameter="{Binding}"/>
                     </Grid>
                 </DataTemplate>
+
+                <!-- DataTemplate for Special Tab -->
+                <DataTemplate x:Key="SpecialTabTemplate">
+                    <Grid>
+                        <TextBlock Text="{Binding TabText}" VerticalAlignment="Center" Padding="10,0"/>
+                    </Grid>
+                </DataTemplate>
+            </TabControl.Resources>
+
+            <!-- Apply the DataTemplate based on the IsSpecialTab property -->
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <ContentControl Content="{Binding}">
+                        <ContentControl.Style>
+                            <Style TargetType="ContentControl">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSpecialTab}" Value="True">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource SpecialTabTemplate}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsSpecialTab}" Value="False">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource NormalTabTemplate}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                </DataTemplate>
             </TabControl.ItemTemplate>
+
             <TabControl.ContentTemplate>
                 <DataTemplate>
                     <ContentControl Content="{Binding Browser}"/>
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>
+
     </Grid>
 </Window>
