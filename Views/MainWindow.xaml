@@ -70,6 +70,19 @@
                 </DataTemplate>
             </TabControl.Resources>
 
+            <!-- Style for TabItems -->
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="TabItem" BasedOn="{StaticResource {x:Type TabItem}}">
+                    <Style.Triggers>
+                        <!-- Apply specific width for special tab -->
+                        <DataTrigger Binding="{Binding IsSpecialTab}" Value="True">
+                            <Setter Property="Width" Value="30"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TabControl.ItemContainerStyle>
+
+
             <!-- Apply the DataTemplate based on the IsSpecialTab property -->
             <TabControl.ItemTemplate>
                 <DataTemplate>
