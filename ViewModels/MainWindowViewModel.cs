@@ -47,7 +47,18 @@ namespace Interweb_Searcher.ViewModels
                 {
                     _selectedTabIndex = value;
                     OnPropertyChanged();
-                    if (_suppressSelectionChanged) return;
+
+                    if (_suppressSelectionChanged) 
+                    {
+                        var selectedTab = Tabs[value];
+                        SelectedBrowser = selectedTab.Browser;
+                        CurrentUrl = SelectedBrowser.Source?.ToString() ?? CurrentUrl;
+
+                        // Raise CanExecuteChanged when the selected tab changes
+                        (BackCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                        (ForwardCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                        return;
+                    } 
 
                     if (value >= 0 && value < Tabs.Count)
                     {
@@ -62,6 +73,10 @@ namespace Interweb_Searcher.ViewModels
                         {
                             SelectedBrowser = selectedTab.Browser;
                             CurrentUrl = SelectedBrowser.Source?.ToString() ?? CurrentUrl;
+
+                            // Raise CanExecuteChanged when the selected tab changes
+                            (BackCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                            (ForwardCommand as RelayCommand)?.RaiseCanExecuteChanged();
                         }
                     }
                 }
@@ -211,6 +226,10 @@ namespace Interweb_Searcher.ViewModels
         private void SelectedBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
             CurrentUrl = e.Uri?.ToString() ?? CurrentUrl;
+
+            // Raise CanExecuteChanged when navigation occurs
+            (BackCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (ForwardCommand as RelayCommand)?.RaiseCanExecuteChanged();
         }
 
         private void SelectedBrowser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
@@ -266,5 +285,11 @@ namespace Interweb_Searcher.ViewModels
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;
         }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
     }
+
 }

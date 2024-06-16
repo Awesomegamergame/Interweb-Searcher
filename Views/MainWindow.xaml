@@ -65,7 +65,7 @@
                 <!-- DataTemplate for Special Tab -->
                 <DataTemplate x:Key="SpecialTabTemplate">
                     <Grid>
-                        <TextBlock Text="{Binding TabText}" VerticalAlignment="Center" Padding="10,0"/>
+                        <TextBlock Text="{Binding TabText}" FontSize="18" VerticalAlignment="Center" Padding="10,0"/>
                     </Grid>
                 </DataTemplate>
             </TabControl.Resources>

@@ -72,6 +72,10 @@ namespace Interweb_Searcher.ViewModels
         private void Browser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
             _mainWindowViewModel.CurrentUrl = e.Uri?.ToString() ?? _mainWindowViewModel.CurrentUrl;
+
+            // Raise CanExecuteChanged when navigation occurs
+            (_mainWindowViewModel.BackCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (_mainWindowViewModel.ForwardCommand as RelayCommand)?.RaiseCanExecuteChanged();
         }
 
         private void Browser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
