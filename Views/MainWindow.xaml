@@ -22,7 +22,6 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <!-- Navigation Buttons -->
@@ -40,7 +39,7 @@
 
             <!-- New UI Switch -->
             <wpfui:ToggleSwitch Grid.Column="3" Margin="10" Content="New UI" IsChecked="True" Unchecked="ToggleSwitch_Unchecked"/>
-            <wpfui:Button Grid.Column="4" Icon="{wpfui:SymbolIcon Add48}" FontSize="18" Command="{Binding AddTabCommand}" Margin="5" />
+            <wpfui:Button Grid.Column="4" Visibility="Collapsed" Icon="{wpfui:SymbolIcon Add48}" FontSize="18" Command="{Binding AddTabCommand}" Margin="5" /> <!-- I might need this later so i'll keep this hidden for now -->
         </Grid>
 
         <!-- TabControl for WebBrowser -->
