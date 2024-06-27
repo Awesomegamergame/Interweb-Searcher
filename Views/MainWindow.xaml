@@ -10,40 +10,11 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Navigation Buttons and Address Bar -->
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-
-            <!-- Navigation Buttons -->
-            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="10">
-                <wpfui:Button x:Name="BackButton" Icon="{wpfui:SymbolIcon ArrowLeft48}" FontSize="18" Command="{Binding BackCommand}" Margin="5" />
-                <wpfui:Button Icon="{wpfui:SymbolIcon ArrowRight48}" FontSize="18" Command="{Binding ForwardCommand}" Margin="5" />
-                <wpfui:Button Icon="{wpfui:SymbolIcon ArrowClockwise48}" FontSize="18" Command="{Binding RefreshCommand}" Margin="5" />
-                <wpfui:Button Icon="{wpfui:SymbolIcon Home48}" FontSize="18" Command="{Binding NavigateHomeCommand}" Margin="5" />
-            </StackPanel>
-
-            <!-- Address Bar -->
-            <TextBox Grid.Column="1" x:Name="UrlBox" Text="{Binding CurrentUrl, UpdateSourceTrigger=PropertyChanged}" 
-                     Margin="10" VerticalAlignment="Center" MinHeight="{Binding ActualHeight, ElementName=BackButton}"
-                     KeyDown="UrlBox_KeyDown"/>
-
-            <!-- New UI Switch -->
-            <wpfui:ToggleSwitch Grid.Column="3" Margin="10" Content="New UI" IsChecked="True" Unchecked="ToggleSwitch_Unchecked"/>
-            <wpfui:Button Grid.Column="4" Visibility="Collapsed" Icon="{wpfui:SymbolIcon Add48}" FontSize="18" Command="{Binding AddTabCommand}" Margin="5" /> <!-- I might need this later so i'll keep this hidden for now -->
-        </Grid>
-
         <!-- TabControl for WebBrowser -->
-        <TabControl Grid.Row="1" x:Name="TabControl" Margin="0"
+        <TabControl Grid.Row="0" x:Name="TabControl" Margin="0"
             ItemsSource="{Binding Tabs}"
             SelectedIndex="{Binding SelectedTabIndex}"
             SelectionChanged="TabControl_SelectionChanged">
@@ -102,12 +73,40 @@
                 </DataTemplate>
             </TabControl.ItemTemplate>
 
+            <!-- TabControl ContentTemplate -->
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <ContentControl Content="{Binding Browser}"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Navigation Bar -->
+                        <Grid Grid.Row="0" Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <wpfui:Button x:Name="BackButton" Icon="{wpfui:SymbolIcon ArrowLeft48}" FontSize="18" Command="{Binding BackCommand}" Margin="5" Grid.Column="0"/>
+                            <wpfui:Button Icon="{wpfui:SymbolIcon ArrowRight48}" Command="{Binding ForwardCommand}" FontSize="18" Margin="5" Grid.Column="1"/>
+                            <wpfui:Button Icon="{wpfui:SymbolIcon ArrowClockwise48}" Command="{Binding RefreshCommand}" FontSize="18" Margin="5" Grid.Column="2"/>
+                            <wpfui:Button Icon="{wpfui:SymbolIcon Home48}" Command="{Binding NavigateHomeCommand}" FontSize="18" Margin="5" Grid.Column="3"/>
+                            <TextBox x:Name="UrlTextBox" Text="{Binding CurrentUrl, UpdateSourceTrigger=PropertyChanged}" Margin="10" VerticalAlignment="Center" KeyDown="UrlBox_KeyDown" MinHeight="{Binding ActualHeight, ElementName=BackButton}" Grid.Column="4" HorizontalAlignment="Stretch"/>
+                            <wpfui:ToggleSwitch Margin="10" Content="New UI" IsChecked="True" Unchecked="ToggleSwitch_Unchecked" Grid.Column="6"/>
+                        </Grid>
+
+                        <!-- WebBrowser Control -->
+                        <ContentControl Grid.Row="1" Content="{Binding Browser}"/>
+                    </Grid>
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>
-
     </Grid>
 </Window>

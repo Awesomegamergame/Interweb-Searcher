@@ -21,26 +21,21 @@ namespace Interweb_Searcher.Views
             _viewModel = new MainWindowViewModel();
             DataContext = _viewModel;
 
-            TabControl.SelectionChanged += TabControl_SelectionChanged;
-
             Loaded += MainWindow_Loaded;  // Add event handler for Loaded event
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // Navigate to the StartupUrl when the window is loaded
-            _viewModel.NavigateCommand.Execute(StartupUrl);
+            var firstTab = _viewModel.Tabs[0];
+            firstTab.NavigateCommand.Execute(StartupUrl);
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.Source is TabControl)
             {
-                // Update the ViewModel's CurrentUrl property with the new URL
-                if (TabControl.SelectedItem is WebBrowser selectedBrowser)
-                {
-                    _viewModel.CurrentUrl = selectedBrowser.Source?.ToString();
-                }
+                // You can add logic here if needed for selection change
             }
         }
 
@@ -48,10 +43,10 @@ namespace Interweb_Searcher.Views
         {
             if (e.Key == Key.Enter)
             {
-                // Execute the NavigateCommand when Enter key is pressed
-                if (DataContext is MainWindowViewModel viewModel)
+                // Execute the NavigateCommand of the selected tab when Enter key is pressed
+                if (TabControl.SelectedItem is TabViewModel selectedTab)
                 {
-                    viewModel.NavigateCommand.Execute(UrlBox.Text);
+                    selectedTab.NavigateCommand.Execute((sender as TextBox).Text);
                 }
             }
         }

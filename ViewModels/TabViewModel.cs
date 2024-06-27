@@ -11,6 +11,7 @@ namespace Interweb_Searcher.ViewModels
         private string _tabText = "New Tab";
         private WebBrowser _browser;
         private readonly MainWindowViewModel _mainWindowViewModel;
+        private string _currentUrl;
 
         public TabViewModel(MainWindowViewModel mainWindowViewModel)
         {
@@ -20,6 +21,12 @@ namespace Interweb_Searcher.ViewModels
             _browser.LoadCompleted += Browser_LoadCompleted;
             _browser.Navigate("https://www.google.com"); // Default home page
             RemoveTabCommand = new RelayCommand(RemoveTab);
+
+            BackCommand = new RelayCommand(Back, CanGoBack);
+            ForwardCommand = new RelayCommand(Forward, CanGoForward);
+            RefreshCommand = new RelayCommand(Refresh);
+            NavigateHomeCommand = new RelayCommand(NavigateHome);
+            NavigateCommand = new RelayCommand(Navigate);
         }
 
         public string TabText
@@ -42,13 +49,86 @@ namespace Interweb_Searcher.ViewModels
             }
         }
 
+        public string CurrentUrl
+        {
+            get => _currentUrl;
+            set
+            {
+                _currentUrl = value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool IsSpecialTab { get; set; }
 
         public ICommand RemoveTabCommand { get; }
+        public ICommand BackCommand { get; }
+        public ICommand ForwardCommand { get; }
+        public ICommand RefreshCommand { get; }
+        public ICommand NavigateHomeCommand { get; }
+        public ICommand NavigateCommand { get; }
 
         private void RemoveTab(object parameter)
         {
             _mainWindowViewModel.RemoveTab(this);
+        }
+
+        private bool CanGoBack(object parameter)
+        {
+            return Browser?.CanGoBack ?? false;
+        }
+
+        private void Back(object parameter)
+        {
+            Browser?.GoBack();
+        }
+
+        private bool CanGoForward(object parameter)
+        {
+            return Browser?.CanGoForward ?? false;
+        }
+
+        private void Forward(object parameter)
+        {
+            Browser?.GoForward();
+        }
+
+        private void Refresh(object parameter)
+        {
+            Browser?.Refresh();
+        }
+
+        private void NavigateHome(object parameter)
+        {
+            CurrentUrl = "https://www.google.com";
+            Browser?.Navigate(CurrentUrl);
+        }
+
+        private void Navigate(object parameter)
+        {
+            if (parameter is string url && Uri.IsWellFormedUriString(url, UriKind.Absolute))
+            {
+                CurrentUrl = url;
+                Browser?.Navigate(url);
+            }
+        }
+
+        private void Browser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+            CurrentUrl = e.Uri?.ToString() ?? CurrentUrl;
+            (BackCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (ForwardCommand as RelayCommand)?.RaiseCanExecuteChanged();
+        }
+
+        private void Browser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+            string title = (string)Browser.InvokeScript("eval", "document.title.toString()");
+            TabText = string.IsNullOrEmpty(title) ? TruncateText(CurrentUrl, 27) : TruncateText(title, 27);
+        }
+
+        private string TruncateText(string text, int maxLength)
+        {
+            return text.Length <= maxLength ? text : text.Substring(0, maxLength);
         }
 
         public void Dispose()
@@ -57,50 +137,15 @@ namespace Interweb_Searcher.ViewModels
             {
                 _browser.Navigated -= Browser_Navigated;
                 _browser.LoadCompleted -= Browser_LoadCompleted;
-                _browser.Dispose(); // Properly dispose of the WebBrowser control
+                _browser.Dispose();
                 _browser = null;
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void Browser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
-        {
-            _mainWindowViewModel.CurrentUrl = e.Uri?.ToString() ?? _mainWindowViewModel.CurrentUrl;
-
-            // Raise CanExecuteChanged when navigation occurs
-            (_mainWindowViewModel.BackCommand as RelayCommand)?.RaiseCanExecuteChanged();
-            (_mainWindowViewModel.ForwardCommand as RelayCommand)?.RaiseCanExecuteChanged();
-        }
-
-        private void Browser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
-        {
-            string title = (string)Browser.InvokeScript("eval", "document.title.toString()");
-            if (string.IsNullOrEmpty(title))
-            {
-                TabText = TruncateText(_mainWindowViewModel.CurrentUrl, 27);
-            }
-            else
-            {
-                TabText = TruncateText(title, 27);
-            }
-        }
-
-        private string TruncateText(string text, int maxLength)
-        {
-            if (text.Length <= maxLength)
-            {
-                return text;
-            }
-            else
-            {
-                return text.Substring(0, maxLength);
-            }
         }
     }
 }
