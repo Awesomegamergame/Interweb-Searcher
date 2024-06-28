@@ -12,7 +12,7 @@ namespace Interweb_Searcher.Views
     {
         private MainWindowViewModel _viewModel;
 
-        public string StartupUrl { get; set; } = "https://www.google.com";  // Default home page
+        public string StartupUrl { get; set; } = "https://www.google.com/";  // Default home page
 
         public MainWindow()
         {
@@ -29,14 +29,6 @@ namespace Interweb_Searcher.Views
             // Navigate to the StartupUrl when the window is loaded
             var firstTab = _viewModel.Tabs[0];
             firstTab.NavigateCommand.Execute(StartupUrl);
-        }
-
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.Source is TabControl)
-            {
-                // You can add logic here if needed for selection change
-            }
         }
 
         private void UrlBox_KeyDown(object sender, KeyEventArgs e)

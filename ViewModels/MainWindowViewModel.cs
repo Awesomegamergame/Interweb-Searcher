@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Interweb_Searcher.Models;
 
 namespace Interweb_Searcher.ViewModels
 {
@@ -84,8 +85,6 @@ namespace Interweb_Searcher.ViewModels
             if (parameter is TabViewModel tab && Tabs.Contains(tab))
             {
                 int index = Tabs.IndexOf(tab);
-                Tabs.Remove(tab);
-                tab.Dispose();
 
                 if (Tabs.Count == 1)
                 {
@@ -106,6 +105,9 @@ namespace Interweb_Searcher.ViewModels
                 {
                     SelectedTabIndex = index;
                 }
+
+                Tabs.Remove(tab);
+                tab.Dispose();
             }
         }
 
@@ -118,34 +120,6 @@ namespace Interweb_Searcher.ViewModels
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-
-    public class RelayCommand : ICommand
-    {
-        private readonly Action<object> _execute;
-        private readonly Func<object, bool> _canExecute;
-
-        public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
-        {
-            _execute = execute;
-            _canExecute = canExecute;
-        }
-
-        public bool CanExecute(object parameter) => _canExecute?.Invoke(parameter) ?? true;
-
-        public void Execute(object parameter) => _execute(parameter);
-
-        public event EventHandler CanExecuteChanged
-        {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
-        }
-
-        public void RaiseCanExecuteChanged()
-        {
-            CommandManager.InvalidateRequerySuggested();
         }
     }
 }

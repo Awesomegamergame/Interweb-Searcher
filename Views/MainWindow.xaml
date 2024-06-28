@@ -16,8 +16,7 @@
         <!-- TabControl for WebBrowser -->
         <TabControl Grid.Row="0" x:Name="TabControl" Margin="0"
             ItemsSource="{Binding Tabs}"
-            SelectedIndex="{Binding SelectedTabIndex}"
-            SelectionChanged="TabControl_SelectionChanged">
+            SelectedIndex="{Binding SelectedTabIndex}">
 
             <TabControl.Resources>
                 <!-- DataTemplate for Normal Tabs -->
@@ -99,7 +98,7 @@
                             <wpfui:Button Icon="{wpfui:SymbolIcon ArrowClockwise48}" Command="{Binding RefreshCommand}" FontSize="18" Margin="5" Grid.Column="2"/>
                             <wpfui:Button Icon="{wpfui:SymbolIcon Home48}" Command="{Binding NavigateHomeCommand}" FontSize="18" Margin="5" Grid.Column="3"/>
                             <TextBox x:Name="UrlTextBox" Text="{Binding CurrentUrl, UpdateSourceTrigger=PropertyChanged}" Margin="10" VerticalAlignment="Center" KeyDown="UrlBox_KeyDown" MinHeight="{Binding ActualHeight, ElementName=BackButton}" Grid.Column="4" HorizontalAlignment="Stretch"/>
-                            <wpfui:ToggleSwitch Margin="10" Content="New UI" IsChecked="True" Unchecked="ToggleSwitch_Unchecked" Grid.Column="6"/>
+                            <wpfui:ToggleSwitch Margin="10" Content="New UI" IsChecked="True" Click="ToggleSwitch_Unchecked" Grid.Column="6"/>
                         </Grid>
 
                         <!-- WebBrowser Control -->

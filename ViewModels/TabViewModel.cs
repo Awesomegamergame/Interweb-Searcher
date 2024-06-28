@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Interweb_Searcher.Models;
 
 namespace Interweb_Searcher.ViewModels
 {
@@ -19,7 +20,7 @@ namespace Interweb_Searcher.ViewModels
             _browser = new WebBrowser();
             _browser.Navigated += Browser_Navigated;
             _browser.LoadCompleted += Browser_LoadCompleted;
-            _browser.Navigate("https://www.google.com"); // Default home page
+            _browser.Navigate("https://www.google.com/"); // Default home page
             RemoveTabCommand = new RelayCommand(RemoveTab);
 
             BackCommand = new RelayCommand(Back, CanGoBack);
@@ -100,7 +101,7 @@ namespace Interweb_Searcher.ViewModels
 
         private void NavigateHome(object parameter)
         {
-            CurrentUrl = "https://www.google.com";
+            CurrentUrl = "https://www.google.com/";
             Browser?.Navigate(CurrentUrl);
         }
 
