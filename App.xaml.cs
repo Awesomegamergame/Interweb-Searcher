@@ -19,7 +19,7 @@ namespace Interweb_Searcher
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             string[] args = Environment.GetCommandLineArgs();
-            args = new string[] { "", "ie", "https://www.google.com/" };
+            //args = new string[] { "", "ie", "https://www.google.com/" }; -- test line
 
             Window mainWindow;
             string startupUrl = "https://www.google.com/";  // Default home page
