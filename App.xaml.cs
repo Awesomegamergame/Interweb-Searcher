@@ -104,6 +104,7 @@ namespace Interweb_Searcher
 
             // Stop listening for incoming requests
             listener.Stop();
+            Thread.Sleep(100);
 
             this.Dispatcher.Invoke(() =>
             {
