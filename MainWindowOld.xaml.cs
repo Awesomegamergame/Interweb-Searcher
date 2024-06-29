@@ -12,7 +12,7 @@ namespace Interweb_Searcher
     public partial class MainWindowOld : Window
     {
         public static MainWindowOld ISWindow;
-        public static List<string> WebPages;
+        public static List<string> WebPages = new List<string>();
         public System.Windows.Forms.WebBrowser wb1;
         public string ProgramLocation = $"{AppDomain.CurrentDomain.BaseDirectory}\\zoom.txt";
         int Current = 0;
@@ -25,7 +25,6 @@ namespace Interweb_Searcher
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            WebPages = new List<string>();
             GoHome();
         }
 
