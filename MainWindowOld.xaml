@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Interweb_Searcher"
         mc:Ignorable="d"
+        Closing="Window_Closing"
         Title="Interweb Searcher" Height="550" Width="900" Loaded="Window_Loaded" MinHeight="450" MinWidth="800">
     <Grid>
         <Grid.RowDefinitions>

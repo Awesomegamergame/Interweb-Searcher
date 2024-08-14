@@ -12,6 +12,8 @@ namespace Interweb_Searcher.Views
     {
         private MainWindowViewModel _viewModel;
 
+        public string StartupUrl { get; set; } = "https://www.google.com/";  // Default home page
+
         public MainWindow()
         {
             InitializeComponent();
@@ -19,30 +21,24 @@ namespace Interweb_Searcher.Views
             _viewModel = new MainWindowViewModel();
             DataContext = _viewModel;
 
-            TabControl.SelectionChanged += TabControl_SelectionChanged;
-
-            _viewModel.NavigateCommand.Execute(_viewModel.CurrentUrl);
+            Loaded += MainWindow_Loaded;  // Add event handler for Loaded event
         }
 
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            if (DataContext is MainWindowViewModel viewModel)
-            {
-                if (TabControl.SelectedIndex >= 0 && TabControl.SelectedIndex < viewModel.Tabs.Count)
-                {
-                    viewModel.SelectedBrowser = viewModel.Tabs[TabControl.SelectedIndex];
-                    viewModel.CurrentUrl = viewModel.SelectedBrowser.Source?.ToString() ?? "https://www.google.com";
-                }
-            }
+            // Navigate to the StartupUrl when the window is loaded
+            var firstTab = _viewModel.Tabs[0];
+            firstTab.NavigateCommand.Execute(StartupUrl);
         }
 
         private void UrlBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                if (DataContext is MainWindowViewModel viewModel)
+                // Execute the NavigateCommand of the selected tab when Enter key is pressed
+                if (TabControl.SelectedItem is TabViewModel selectedTab)
                 {
-                    viewModel.NavigateCommand.Execute(UrlBox.Text);
+                    selectedTab.NavigateCommand.Execute((sender as TextBox).Text);
                 }
             }
         }
@@ -51,13 +47,16 @@ namespace Interweb_Searcher.Views
         {
             string newFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "new");
 
+            // Delete the "new" file if it exists
             if (File.Exists(newFilePath))
             {
                 File.Delete(newFilePath);
             }
 
+            // Wait for 500 milliseconds to allow the checkbox to visually update
             await Task.Delay(500);
 
+            // Restart the application
             System.Windows.Forms.Application.Restart();
             Application.Current.Shutdown();
         }
