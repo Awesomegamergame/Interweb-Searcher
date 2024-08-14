@@ -1,23 +1,25 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Interweb_Searcher.Models;
+using SHDocVw;
 
 namespace Interweb_Searcher.ViewModels
 {
     public class TabViewModel : INotifyPropertyChanged, IDisposable
     {
         private string _tabText = "New Tab";
-        private WebBrowser _browser;
+        private System.Windows.Controls.WebBrowser _browser;
         private readonly MainWindowViewModel _mainWindowViewModel;
         private string _currentUrl;
 
         public TabViewModel(MainWindowViewModel mainWindowViewModel)
         {
             _mainWindowViewModel = mainWindowViewModel;
-            _browser = new WebBrowser();
+            _browser = new System.Windows.Controls.WebBrowser();
             _browser.Navigated += Browser_Navigated;
             _browser.LoadCompleted += Browser_LoadCompleted;
             _browser.Navigate("https://www.google.com/"); // Default home page
@@ -28,6 +30,7 @@ namespace Interweb_Searcher.ViewModels
             RefreshCommand = new RelayCommand(Refresh);
             NavigateHomeCommand = new RelayCommand(NavigateHome);
             NavigateCommand = new RelayCommand(Navigate);
+            testclickc = new RelayCommand(testclick);
         }
 
         public string TabText
@@ -40,7 +43,7 @@ namespace Interweb_Searcher.ViewModels
             }
         }
 
-        public WebBrowser Browser
+        public System.Windows.Controls.WebBrowser Browser
         {
             get => _browser;
             set
@@ -68,6 +71,7 @@ namespace Interweb_Searcher.ViewModels
         public ICommand RefreshCommand { get; }
         public ICommand NavigateHomeCommand { get; }
         public ICommand NavigateCommand { get; }
+        public ICommand testclickc { get; }
 
         private void RemoveTab(object parameter)
         {
@@ -132,6 +136,11 @@ namespace Interweb_Searcher.ViewModels
             return text.Length <= maxLength ? text : text.Substring(0, maxLength);
         }
 
+        private void testclick(object sender)
+        {
+            MessageBox.Show("Test");
+        }
+
         public void Dispose()
         {
             if (_browser != null)
@@ -148,5 +157,17 @@ namespace Interweb_Searcher.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        /*
+         * Some code that ill need later for zoom controls when i get the ui created
+         * 
+            dynamic activeX = this.Browser.GetType().InvokeMember("ActiveXInstance",
+                System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic,
+                null, this.Browser, new object[] { });
+
+            IWebBrowser2 webBrowser2 = (IWebBrowser2)activeX;
+
+            webBrowser2.ExecWB(OLECMDID.OLECMDID_CLOSE, OLECMDEXECOPT.OLECMDEXECOPT_DONTPROMPTUSER);
+        */
     }
 }
