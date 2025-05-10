@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AGG Productions")]
 [assembly: AssemblyProduct("Interweb Searcher")]
-[assembly: AssemblyCopyright("AGG Productions Copyright ©  2024")]
+[assembly: AssemblyCopyright("AGG Productions Copyright ©  2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

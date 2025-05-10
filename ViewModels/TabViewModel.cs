@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Interweb_Searcher.Models;
+using Interweb_Searcher.Views;
 using SHDocVw;
 
 namespace Interweb_Searcher.ViewModels
@@ -30,7 +31,8 @@ namespace Interweb_Searcher.ViewModels
             RefreshCommand = new RelayCommand(Refresh);
             NavigateHomeCommand = new RelayCommand(NavigateHome);
             NavigateCommand = new RelayCommand(Navigate);
-            testclickc = new RelayCommand(testclick);
+
+            AboutCommand = new RelayCommand(OpenAboutWindow);
         }
 
         public string TabText
@@ -71,7 +73,7 @@ namespace Interweb_Searcher.ViewModels
         public ICommand RefreshCommand { get; }
         public ICommand NavigateHomeCommand { get; }
         public ICommand NavigateCommand { get; }
-        public ICommand testclickc { get; }
+        public ICommand AboutCommand { get; }
 
         private void RemoveTab(object parameter)
         {
@@ -117,6 +119,13 @@ namespace Interweb_Searcher.ViewModels
                 Browser?.Navigate(url);
             }
         }
+        private void OpenAboutWindow(object obj)
+        {
+            var window = new AboutWindow();
+            window.Owner = Application.Current.MainWindow;
+            window.ShowDialog();
+        }
+
 
         private void Browser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
@@ -134,11 +143,6 @@ namespace Interweb_Searcher.ViewModels
         private string TruncateText(string text, int maxLength)
         {
             return text.Length <= maxLength ? text : text.Substring(0, maxLength);
-        }
-
-        private void testclick(object sender)
-        {
-            MessageBox.Show("Test");
         }
 
         public void Dispose()

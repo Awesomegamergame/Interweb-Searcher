@@ -102,10 +102,10 @@
                             <wpfui:ToggleSwitch Margin="10" Content="New UI" IsChecked="True" Click="ToggleSwitch_Unchecked" Grid.Column="6"/>
                             <Menu FontSize="20" Margin="5" Grid.Column="7" Height="45">
                                 <wpfui:MenuItem Header="{wpfui:SymbolIcon Navigation24}">
-                                    <MenuItem Header="Test" Command="{Binding testclickc}"/>
+                                    <wpfui:MenuItem Header="About Interweb Searcher" Command="{Binding AboutCommand}"/>
                                 </wpfui:MenuItem>
                             </Menu>
-                            
+
                         </Grid>
 
                         <!-- WebBrowser Control -->
