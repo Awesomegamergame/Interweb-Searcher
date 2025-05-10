@@ -1,9 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Interweb_Searcher.Models;
 using Interweb_Searcher.Views;
 using SHDocVw;
@@ -16,6 +20,7 @@ namespace Interweb_Searcher.ViewModels
         private System.Windows.Controls.WebBrowser _browser;
         private readonly MainWindowViewModel _mainWindowViewModel;
         private string _currentUrl;
+        private ImageSource _favicon;
 
         public TabViewModel(MainWindowViewModel mainWindowViewModel)
         {
@@ -33,6 +38,16 @@ namespace Interweb_Searcher.ViewModels
             NavigateCommand = new RelayCommand(Navigate);
 
             AboutCommand = new RelayCommand(OpenAboutWindow);
+        }
+
+        public ImageSource Favicon
+        {
+            get => _favicon;
+            set
+            {
+                _favicon = value;
+                OnPropertyChanged();
+            }
         }
 
         public string TabText
@@ -137,12 +152,44 @@ namespace Interweb_Searcher.ViewModels
         private void Browser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
             string title = (string)Browser.InvokeScript("eval", "document.title.toString()");
-            TabText = string.IsNullOrEmpty(title) ? TruncateText(CurrentUrl, 27) : TruncateText(title, 27);
+            TabText = string.IsNullOrEmpty(title) ? TruncateText(CurrentUrl, 28) : TruncateText(title, 28);
+            UpdateFavicon(CurrentUrl);
         }
 
         private string TruncateText(string text, int maxLength)
         {
             return text.Length <= maxLength ? text : text.Substring(0, maxLength);
+        }
+
+        private async void UpdateFavicon(string url)
+        {
+            try
+            {
+                var uri = new Uri(url);
+                string faviconUrl = $"{uri.Scheme}://{uri.Host}/favicon.ico";
+
+                using (var client = new HttpClient())
+                {
+                    var bytes = await client.GetByteArrayAsync(faviconUrl);
+
+                    using (var stream = new MemoryStream(bytes))
+                    {
+                        var bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmap.StreamSource = stream;
+                        bitmap.EndInit();
+                        bitmap.Freeze(); // Important for cross-thread usage
+
+                        Favicon = bitmap;
+                    }
+                }
+            }
+            catch
+            {
+                // Fallback or clear icon
+                Favicon = null;
+            }
         }
 
         public void Dispose()

@@ -23,13 +23,17 @@
                 <DataTemplate x:Key="NormalTabTemplate">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="170"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="150"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding TabText}" VerticalAlignment="Center"/>
-                        <wpfui:Button Grid.Column="1" Icon="{wpfui:SymbolIcon Dismiss48}" Width="35" Command="{Binding DataContext.RemoveTabCommand, RelativeSource={RelativeSource AncestorType=TabControl}}" CommandParameter="{Binding}"/>
+
+                        <Image Grid.Column="0" Width="16" Height="16" Source="{Binding Favicon}" Margin="2" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <TextBlock Grid.Column="1" FontSize="12" Text="{Binding TabText}" VerticalAlignment="Center"/>
+                        <wpfui:Button Grid.Column="2" Icon="{wpfui:SymbolIcon Dismiss48}" Width="35" Command="{Binding DataContext.RemoveTabCommand, RelativeSource={RelativeSource AncestorType=TabControl}}" CommandParameter="{Binding}"/>
                     </Grid>
                 </DataTemplate>
+
 
                 <!-- DataTemplate for Special Tab -->
                 <DataTemplate x:Key="SpecialTabTemplate">
