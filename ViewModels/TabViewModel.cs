@@ -165,13 +165,40 @@ namespace Interweb_Searcher.ViewModels
         {
             try
             {
-                var uri = new Uri(url);
-                string faviconUrl = $"{uri.Scheme}://{uri.Host}/favicon.ico";
+                Uri baseUri = new Uri(url);
+
+                // Try to extract favicon link from the DOM
+                string faviconUrl = null;
+
+                dynamic document = Browser.Document;
+                var links = document?.getElementsByTagName("link");
+
+                if (links != null)
+                {
+                    foreach (var link in links)
+                    {
+                        string rel = link.rel as string;
+                        if (!string.IsNullOrEmpty(rel) && rel.ToLower().Contains("icon"))
+                        {
+                            string href = link.href as string;
+                            if (!string.IsNullOrEmpty(href))
+                            {
+                                faviconUrl = new Uri(baseUri, href).ToString(); // Make absolute URL
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Fallback to default location if not found
+                if (string.IsNullOrEmpty(faviconUrl))
+                {
+                    faviconUrl = $"{baseUri.Scheme}://{baseUri.Host}/favicon.ico";
+                }
 
                 using (var client = new HttpClient())
                 {
                     var bytes = await client.GetByteArrayAsync(faviconUrl);
-
                     using (var stream = new MemoryStream(bytes))
                     {
                         var bitmap = new BitmapImage();
@@ -187,10 +214,10 @@ namespace Interweb_Searcher.ViewModels
             }
             catch
             {
-                // Fallback or clear icon
                 Favicon = null;
             }
         }
+
 
         public void Dispose()
         {
