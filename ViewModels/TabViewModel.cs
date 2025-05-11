@@ -201,6 +201,10 @@ namespace Interweb_Searcher.ViewModels
                 _browser.Dispose();
                 _browser = null;
             }
+
+            Favicon = null;
+
+            GC.Collect();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

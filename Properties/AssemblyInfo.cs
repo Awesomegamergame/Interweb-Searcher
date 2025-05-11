@@ -6,7 +6,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Interweb Searcher")]
-[assembly: AssemblyDescription("Allows you to search the internet using IE's MSHTML Engine | Beta Version")]
+[assembly: AssemblyDescription("Allows you to search the internet using IE's MSHTML Engine")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AGG Productions")]
 [assembly: AssemblyProduct("Interweb Searcher")]
