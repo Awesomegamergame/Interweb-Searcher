@@ -18,6 +18,15 @@ namespace Interweb_Searcher.Views
         {
             InitializeComponent();
 
+            this.Loaded += (s, e) =>
+            {
+                this.Top = Properties.Settings.Default.WindowTop;
+                this.Left = Properties.Settings.Default.WindowLeft;
+                this.Width = Properties.Settings.Default.WindowWidth;
+                this.Height = Properties.Settings.Default.WindowHeight;
+                this.WindowState = Properties.Settings.Default.WindowState;
+            };
+
             _viewModel = new MainWindowViewModel();
             DataContext = _viewModel;
 
@@ -59,6 +68,30 @@ namespace Interweb_Searcher.Views
             // Restart the application
             System.Windows.Forms.Application.Restart();
             Application.Current.Shutdown();
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            Properties.Settings.Default.WindowState = this.WindowState;
+
+            if (this.WindowState == WindowState.Normal)
+            {
+                Properties.Settings.Default.WindowTop = this.Top;
+                Properties.Settings.Default.WindowLeft = this.Left;
+                Properties.Settings.Default.WindowWidth = this.Width;
+                Properties.Settings.Default.WindowHeight = this.Height;
+            }
+            else
+            {
+                // Save RestoreBounds if window is maximized or minimized
+                Properties.Settings.Default.WindowTop = this.RestoreBounds.Top;
+                Properties.Settings.Default.WindowLeft = this.RestoreBounds.Left;
+                Properties.Settings.Default.WindowWidth = this.RestoreBounds.Width;
+                Properties.Settings.Default.WindowHeight = this.RestoreBounds.Height;
+            }
+
+            Properties.Settings.Default.Save();
+            base.OnClosing(e);
         }
     }
 }

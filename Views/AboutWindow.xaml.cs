@@ -23,9 +23,5 @@ namespace Interweb_Searcher.Views
         {
             InitializeComponent();
         }
-        private void Ok_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
     }
 }
