@@ -1,10 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Interweb_Searcher.Models;
+using Interweb_Searcher.Views;
 using SHDocVw;
 
 namespace Interweb_Searcher.ViewModels
@@ -15,6 +20,7 @@ namespace Interweb_Searcher.ViewModels
         private System.Windows.Controls.WebBrowser _browser;
         private readonly MainWindowViewModel _mainWindowViewModel;
         private string _currentUrl;
+        private ImageSource _favicon;
 
         public TabViewModel(MainWindowViewModel mainWindowViewModel)
         {
@@ -30,7 +36,18 @@ namespace Interweb_Searcher.ViewModels
             RefreshCommand = new RelayCommand(Refresh);
             NavigateHomeCommand = new RelayCommand(NavigateHome);
             NavigateCommand = new RelayCommand(Navigate);
-            testclickc = new RelayCommand(testclick);
+
+            AboutCommand = new RelayCommand(OpenAboutWindow);
+        }
+
+        public ImageSource Favicon
+        {
+            get => _favicon;
+            set
+            {
+                _favicon = value;
+                OnPropertyChanged();
+            }
         }
 
         public string TabText
@@ -71,7 +88,7 @@ namespace Interweb_Searcher.ViewModels
         public ICommand RefreshCommand { get; }
         public ICommand NavigateHomeCommand { get; }
         public ICommand NavigateCommand { get; }
-        public ICommand testclickc { get; }
+        public ICommand AboutCommand { get; }
 
         private void RemoveTab(object parameter)
         {
@@ -117,6 +134,13 @@ namespace Interweb_Searcher.ViewModels
                 Browser?.Navigate(url);
             }
         }
+        private void OpenAboutWindow(object obj)
+        {
+            var window = new AboutWindow();
+            window.Owner = Application.Current.MainWindow;
+            window.ShowDialog();
+        }
+
 
         private void Browser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
@@ -128,7 +152,8 @@ namespace Interweb_Searcher.ViewModels
         private void Browser_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
             string title = (string)Browser.InvokeScript("eval", "document.title.toString()");
-            TabText = string.IsNullOrEmpty(title) ? TruncateText(CurrentUrl, 27) : TruncateText(title, 27);
+            TabText = string.IsNullOrEmpty(title) ? TruncateText(CurrentUrl, 28) : TruncateText(title, 28);
+            UpdateFavicon(CurrentUrl);
         }
 
         private string TruncateText(string text, int maxLength)
@@ -136,10 +161,63 @@ namespace Interweb_Searcher.ViewModels
             return text.Length <= maxLength ? text : text.Substring(0, maxLength);
         }
 
-        private void testclick(object sender)
+        private async void UpdateFavicon(string url)
         {
-            MessageBox.Show("Test");
+            try
+            {
+                Uri baseUri = new Uri(url);
+
+                // Try to extract favicon link from the DOM
+                string faviconUrl = null;
+
+                dynamic document = Browser.Document;
+                var links = document?.getElementsByTagName("link");
+
+                if (links != null)
+                {
+                    foreach (var link in links)
+                    {
+                        string rel = link.rel as string;
+                        if (!string.IsNullOrEmpty(rel) && rel.ToLower().Contains("icon"))
+                        {
+                            string href = link.href as string;
+                            if (!string.IsNullOrEmpty(href))
+                            {
+                                faviconUrl = new Uri(baseUri, href).ToString(); // Make absolute URL
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Fallback to default location if not found
+                if (string.IsNullOrEmpty(faviconUrl))
+                {
+                    faviconUrl = $"{baseUri.Scheme}://{baseUri.Host}/favicon.ico";
+                }
+
+                using (var client = new HttpClient())
+                {
+                    var bytes = await client.GetByteArrayAsync(faviconUrl);
+                    using (var stream = new MemoryStream(bytes))
+                    {
+                        var bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmap.StreamSource = stream;
+                        bitmap.EndInit();
+                        bitmap.Freeze(); // Important for cross-thread usage
+
+                        Favicon = bitmap;
+                    }
+                }
+            }
+            catch
+            {
+                Favicon = null;
+            }
         }
+
 
         public void Dispose()
         {
@@ -150,6 +228,10 @@ namespace Interweb_Searcher.ViewModels
                 _browser.Dispose();
                 _browser = null;
             }
+
+            Favicon = null;
+
+            GC.Collect();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

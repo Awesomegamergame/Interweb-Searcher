@@ -5,12 +5,12 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Interweb Searcher")]
-[assembly: AssemblyDescription("Allows you to search the internet using IE's MSHTML Engine | Beta Version")]
+[assembly: AssemblyTitle("Interweb Searcher | Beta 2")]
+[assembly: AssemblyDescription("Allows you to search the internet using IE's MSHTML Engine")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AGG Productions")]
 [assembly: AssemblyProduct("Interweb Searcher")]
-[assembly: AssemblyCopyright("AGG Productions Copyright ©  2024")]
+[assembly: AssemblyCopyright("AGG Productions Copyright ©  2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

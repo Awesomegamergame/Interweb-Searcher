@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Linq;
 using Interweb_Searcher.Views;
+using Microsoft.Win32;
 
 namespace Interweb_Searcher
 {
@@ -18,6 +19,8 @@ namespace Interweb_Searcher
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            IE11Support();
+
             string[] args = Environment.GetCommandLineArgs();
             //args = new string[] { "", "ie", "https://www.google.com/" }; -- test line
 
@@ -67,6 +70,29 @@ namespace Interweb_Searcher
                 MainWindowOld.ISWindow.area.Text = startupUrl;
                 MainWindowOld.WebPages.Add(startupUrl);
                 MainWindowOld.AddMenuItem(startupUrl);
+            }
+        }
+
+        private void IE11Support(bool uninstall = false)
+        {
+            string exename = AppDomain.CurrentDomain.FriendlyName;
+
+            try
+            {
+                using (var rk = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION", true))
+                {
+                    if (!uninstall)
+                    {
+                        dynamic value = rk.GetValue(exename);
+                        if (value == null)
+                            rk.SetValue(exename, (uint)11001, RegistryValueKind.DWord);
+                    }
+                    else
+                        rk.DeleteValue(exename);
+                }
+            }
+            catch
+            {
             }
         }
 
